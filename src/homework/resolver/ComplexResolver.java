@@ -1,8 +1,8 @@
-package edu.nju.soa.resolver;
+package homework.resolver;
 
-import edu.nju.soa.handler.AuthIdentityHandler;
-import edu.nju.soa.handler.LogHandler;
-import edu.nju.soa.handler.StudentModifyHandler;
+import homework.handler.AuthIdentityHandler;
+import homework.handler.LogHandler;
+import homework.handler.StudentModifyHandler;
 
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.HandlerResolver;
@@ -10,10 +10,7 @@ import javax.xml.ws.handler.PortInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by cuihao on 2017-06-27.
- *
- */
+
 public class ComplexResolver implements HandlerResolver{
     @Override
     public List<Handler> getHandlerChain(PortInfo portInfo) {

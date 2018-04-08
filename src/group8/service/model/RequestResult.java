@@ -1,5 +1,5 @@
 
-package service.model;
+package group8.service.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

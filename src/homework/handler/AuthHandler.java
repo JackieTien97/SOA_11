@@ -1,11 +1,8 @@
-package edu.nju.soa.handler;
+package homework.handler;
 
-import com.sun.xml.ws.api.message.Headers;
-import com.sun.xml.ws.developer.WSBindingProvider;
-import edu.nju.soa.resolver.DefaultResolver;
-import edu.nju.soa.tools.WsdlUrl;
+import cn.edu.nju.jw.schema.*;
+import homework.resolver.DefaultResolver;
 import org.w3c.dom.NodeList;
-import service.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPException;
@@ -17,13 +14,9 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Set;
 
-/**
- * Created by cuihao on 2017-06-26.
- * Auth handler
- */
+
 public class AuthHandler implements SOAPHandler<SOAPMessageContext>{
     @Override
     public Set<QName> getHeaders() {
@@ -40,15 +33,15 @@ public class AuthHandler implements SOAPHandler<SOAPMessageContext>{
                     NodeList nodeList = soapHeader.getChildNodes();
                     String email = nodeList.item(0).getTextContent();
                     String password = nodeList.item(1).getTextContent();
-                    MyService myService = new MyService();
+                    MyAuthService myService = new MyAuthService();
                     myService.setHandlerResolver(new DefaultResolver());
-                    HelloServiceInterface helloServiceInterface = myService.getHelloServicePort();
-                    Login login = new Login();
-                    login.setLoginUsername(email);
-                    login.setLoginPassword(password);
+                    MyAuth myAuth = myService.getAuthPort();
+                    账号认证类型 login = new 账号认证类型();
+                    login.set邮箱(email);
+                    login.set密码(password);
                     try {
-                        helloServiceInterface.login(login);
-                    } catch (LoginException e) {
+                        myAuth.verify(login);
+                    }  catch (IdNotFoundException e) {
                         try {
                             File file = new File("msg.log");
                             if (!file.exists()) {
@@ -58,12 +51,14 @@ public class AuthHandler implements SOAPHandler<SOAPMessageContext>{
                             }
                             FileOutputStream outputStream = new FileOutputStream(file,true);
                             outputStream.write("====================Handler Info=====================\n".getBytes());
-                            outputStream.write(e.getFaultInfo().getMessage().getBytes());
+                            outputStream.write(e.getFaultInfo().getNotFoundId().getBytes());
                             outputStream.write('\n');
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
                         return false;
+                    } catch (PswErrorException e) {
+                        e.printStackTrace();
                     }
                 }
             } catch (SOAPException e) {

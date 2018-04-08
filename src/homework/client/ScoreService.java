@@ -1,78 +1,80 @@
-package edu.nju.soa.client;
+package homework.client;
 
-import cn.edu.nju.jw.wsdl.*;
-import com.sun.xml.ws.api.message.Headers;
-import com.sun.xml.ws.developer.WSBindingProvider;
-import edu.nju.soa.resolver.ComplexResolver;
-import edu.nju.soa.resolver.SimpleResolver;
-import edu.nju.soa.tools.WsdlUrl;
+import com.sun.xml.internal.ws.api.message.Headers;
+import com.sun.xml.internal.ws.developer.WSBindingProvider;
+import group8.service.*;
+import homework.resolver.ComplexResolver;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Holder;
 
-/**
- * Created by cuihao on 2017-06-27.
- *
- */
+
 public class ScoreService {
 
-    //teacher@nju.edu.cn
-    //MF121250001@smail.nju.edu.cn
-    //MG111250001@smail.nju.edu.cn
-    public void addScore(课程成绩列表类型 listType, String email, String password) {
-        ScoreManageServiceImplService service = new ScoreManageServiceImplService();
+    private static final String AUTH_NS = "http://nju.edu.cn/service/";
+
+    public void addScore(ArrayOfXsdAnyType listType, String email, String password) {
+        ScoreManagementService service = new ScoreManagementService();
         service.setHandlerResolver(new ComplexResolver());
-        ScoreManageService scoreManageService = service.getScoreManageServicePort();
-        WSBindingProvider bp = (WSBindingProvider)scoreManageService;
-        bp.setOutboundHeaders(Headers.create(new QName(WsdlUrl.AUTH_NS,"email"),email),
-                Headers.create(new QName(WsdlUrl.AUTH_NS,"password"),password));
-        Holder<课程成绩列表类型> param = new Holder<>(listType);
+        ScoreManagement scoreManage = service.getScoreManagement();
+        WSBindingProvider bp = (WSBindingProvider)scoreManage;
+        bp.setOutboundHeaders(Headers.create(new QName(AUTH_NS,"email"),email),
+                Headers.create(new QName(AUTH_NS,"password"),password));
+        Holder<ArrayOfXsdAnyType> param = new Holder<>(listType);
         try {
-            scoreManageService.addGrade(param);
-        } catch (InvalidCourseId | InvalidStudentId | InvalidScore invalidCourseId) {
-            invalidCourseId.printStackTrace();
+            scoreManage.addScoreOperation(listType);
+        } catch (InputFault inputFault) {
+            inputFault.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
         }
     }
 
-    public void deleteScore(学号课程号类型 scoreCourse, String email, String password) {
-        ScoreManageServiceImplService service = new ScoreManageServiceImplService();
+    public void deleteScore(ArrayOfXsdAnyType listType, String email, String password) {
+        ScoreManagementService service = new ScoreManagementService();
         service.setHandlerResolver(new ComplexResolver());
-        ScoreManageService scoreManageService = service.getScoreManageServicePort();
-        WSBindingProvider bp = (WSBindingProvider)scoreManageService;
-        bp.setOutboundHeaders(Headers.create(new QName(WsdlUrl.AUTH_NS,"email"),email),
-                Headers.create(new QName(WsdlUrl.AUTH_NS,"password"),password));
+        ScoreManagement scoreManage = service.getScoreManagement();
+        WSBindingProvider bp = (WSBindingProvider)scoreManage;
+        bp.setOutboundHeaders(Headers.create(new QName(AUTH_NS,"email"),email),
+                Headers.create(new QName(AUTH_NS,"password"),password));
         try {
-            scoreManageService.deleteGrade(scoreCourse);
-        } catch (InvalidCourseId | InvalidStudentId invalidCourseId) {
-            invalidCourseId.printStackTrace();
+            scoreManage.deleteScoreOperation(listType);
+        } catch (InputFault inputFault) {
+            inputFault.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
         }
     }
 
     public void queryScore(String sid, String email, String password) {
-        ScoreManageServiceImplService service = new ScoreManageServiceImplService();
-        service.setHandlerResolver(new SimpleResolver());
-        ScoreManageService scoreManageService = service.getScoreManageServicePort();
-        WSBindingProvider bp = (WSBindingProvider)scoreManageService;
-        bp.setOutboundHeaders(Headers.create(new QName(WsdlUrl.AUTH_NS,"email"),email),
-                Headers.create(new QName(WsdlUrl.AUTH_NS,"password"),password));
+        ScoreManagementService service = new ScoreManagementService();
+        service.setHandlerResolver(new ComplexResolver());
+        ScoreManagement scoreManage = service.getScoreManagement();
+        WSBindingProvider bp = (WSBindingProvider)scoreManage;
+        bp.setOutboundHeaders(Headers.create(new QName(AUTH_NS,"email"),email),
+                Headers.create(new QName(AUTH_NS,"password"),password));
         try {
-            scoreManageService.queryGrade(sid);
-        } catch (InvalidStudentId invalidStudentId) {
-            invalidStudentId.printStackTrace();
+            scoreManage.queryScoreOperation(sid);
+        } catch (InputFault inputFault) {
+            inputFault.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
         }
     }
 
-    public void modifyScore(课程成绩类型 courseScore, String email, String password) {
-        ScoreManageServiceImplService service = new ScoreManageServiceImplService();
+    public void modifyScore(ArrayOfXsdAnyType courseScore, String email, String password) {
+        ScoreManagementService service = new ScoreManagementService();
         service.setHandlerResolver(new ComplexResolver());
-        ScoreManageService scoreManageService = service.getScoreManageServicePort();
-        WSBindingProvider bp = (WSBindingProvider)scoreManageService;
-        bp.setOutboundHeaders(Headers.create(new QName(WsdlUrl.AUTH_NS,"email"),email),
-                Headers.create(new QName(WsdlUrl.AUTH_NS,"password"),password));
+        ScoreManagement scoreManage = service.getScoreManagement();
+        WSBindingProvider bp = (WSBindingProvider)scoreManage;
+        bp.setOutboundHeaders(Headers.create(new QName(AUTH_NS,"email"),email),
+                Headers.create(new QName(AUTH_NS,"password"),password));
         try {
-            scoreManageService.modifyGrade(courseScore);
-        } catch (InvalidCourseId | InvalidStudentId | InvalidScore invalidCourseId) {
-            invalidCourseId.printStackTrace();
+            scoreManage.modifyScoreOperation(courseScore);
+        } catch (InputFault inputFault) {
+            inputFault.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
         }
     }
 

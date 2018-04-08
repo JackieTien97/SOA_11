@@ -1,8 +1,8 @@
-package edu.nju.soa.handler;
+package homework.handler;
 
-import edu.nju.soa.resolver.DefaultResolver;
+import cn.edu.nju.jw.schema.*;
+import homework.resolver.DefaultResolver;
 import org.w3c.dom.NodeList;
-import service.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPException;
@@ -16,10 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
-/**
- * Created by cuihao on 2017-06-27.
- *
- */
+
 public class AuthIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     @Override
     public Set<QName> getHeaders() {
@@ -36,21 +33,23 @@ public class AuthIdentityHandler implements SOAPHandler<SOAPMessageContext> {
                     NodeList nodeList = soapHeader.getChildNodes();
                     String email = nodeList.item(0).getTextContent();
                     String password = nodeList.item(1).getTextContent();
-                    MyService myService = new MyService();
+                    MyAuthService myService = new MyAuthService();
                     myService.setHandlerResolver(new DefaultResolver());
-                    HelloServiceInterface helloServiceInterface = myService.getHelloServicePort();
-                    Login login = new Login();
-                    login.setLoginUsername(email);
-                    login.setLoginPassword(password);
+                    MyAuth myAuth = myService.getAuthPort();
+                    账号认证类型 login = new 账号认证类型();
+                    login.set邮箱(email);
+                    login.set密码(password);
                     try {
-                        LoginResponse response = helloServiceInterface.login(login);
-                        if (!response.getLoginResults().getKind().equals("教师")) {
+                        验证类型 response = myAuth.verify(login);
+                        if (!(response.get权限() == 权限级别.老师)) {
                             writeMsg("无权限操作.");
                             return false;
                         }
-                    } catch (LoginException e) {
-                        writeMsg(e.getFaultInfo().getMessage());
+                    } catch (IdNotFoundException e) {
+                        writeMsg(e.getFaultInfo().getNotFoundId());
                         return false;
+                    } catch (PswErrorException e) {
+                        e.printStackTrace();
                     }
                 }
             } catch (SOAPException e) {

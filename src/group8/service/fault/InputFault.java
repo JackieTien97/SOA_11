@@ -1,5 +1,5 @@
 
-package service.fault;
+package group8.service.fault;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
